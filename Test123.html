@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Python Console</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('connect', function() {
+          socket.emit('connected', {data: 'Connected!'});
+        });
+        $('form#command').submit(function(event) {
+          socket.emit('command', {data: $('#command').val()});
+          $('#command').val('');
+          event.preventDefault();
+        });
+        socket.on('output', function(data) {
+          $('#output').append(data + '\n');
+        });
+        socket.on('code_output', function(data) {
+          $('#code-output').append(data + '\n');
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Python Console</h1>
+    <form id="command" action="">
+      <label for="input">>>> </label>
+      <input type="text" id="command" name="command" size="50">
+      <input type="submit" value="Run">
+    </form>
+    <h2>Code Output</h2>
+    <pre id="code-output"></pre>
+    <h2>Sample Python Code</h2>
+    <pre>
+import random
+
+def roll_dice():
+    return random.randint(1, 6)
+
+for i in range(5):
+    print('Roll #{}: {}'.format(i+1, roll_dice()))
+    </pre>
+    <h2>Console Output</h2>
+    <pre id="output"></pre>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+      socket.on('connect', function() {
+        socket.emit('connected', {data: 'Connected!'});
+      });
+      $('form#command').submit(function(event) {
+        socket.emit('command', {data: $('#command').val()});
+        $('#command').val('');
+        event.preventDefault();
+      });
+      socket.on('output', function(data) {
+        $('#output').append(data + '\n');
+      });
+      socket.on('code_output', function(data) {
+        $('#code-output').append(data + '\n');
+      });
+    </script>
+  </body>
+</html>
